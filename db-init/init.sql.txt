@@ -1,0 +1,9 @@
+CREATE DATABASE athena;
+
+CREATE TABLE threats (
+    id SERIAL PRIMARY KEY,
+    ip_address TEXT,
+    country TEXT,
+    threat_type TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
