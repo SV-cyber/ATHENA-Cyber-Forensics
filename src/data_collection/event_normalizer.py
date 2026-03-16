@@ -6,13 +6,13 @@ Converts simulated attack logs into structured security events
 import json
 import psycopg2
 from datetime import datetime
+from src.utils.event_bus import event_bus
 
 
 class EventNormalizer:
 
     def __init__(self):
 
-        # Database connection
         self.conn = psycopg2.connect(
             host="localhost",
             database="athena_db",
@@ -25,7 +25,7 @@ class EventNormalizer:
 
     def load_attack_chain(self):
 
-        with open("../caldera-simulator/attack_chain.json") as f:
+        with open("src/caldera-simulator/attack_chain.json") as f:
             data = json.load(f)
 
         return data
@@ -67,6 +67,8 @@ class EventNormalizer:
         self.cursor.execute(query, values)
         self.conn.commit()
 
+        print("Inserted event:", event["event_name"])
+
     def process_events(self):
 
         chain = self.load_attack_chain()
@@ -75,9 +77,9 @@ class EventNormalizer:
 
             normalized = self.normalize_event(event)
 
-            self.insert_event(normalized)
+            event_bus.publish(normalized)
 
-            print("Inserted event:", normalized["event_name"])
+            self.insert_event(normalized)
 
     def close(self):
 
