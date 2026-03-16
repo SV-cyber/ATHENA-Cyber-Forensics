@@ -1,9 +1,10 @@
 """
-ATHENA Backend API
+ATHENA Backend - FastAPI Server
 """
 
 from fastapi import FastAPI
 from datetime import datetime
+import uvicorn
 
 app = FastAPI(
     title="ATHENA API",
@@ -15,25 +16,23 @@ app = FastAPI(
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to ATHENA API",
-        "docs": "/docs",
-        "status": "/health"
+        "project": "ATHENA",
+        "message": "Backend API running"
     }
 
 
 @app.get("/health")
 def health():
     return {
-        "status": "ok",
-        "service": "athena-backend",
+        "status": "healthy",
         "timestamp": datetime.utcnow().isoformat()
     }
 
 
-@app.get("/api/v1/status")
-def status():
-    return {
-        "system": "ATHENA",
-        "version": "0.1.0",
-        "status": "operational"
-    }
+if __name__ == "__main__":
+    uvicorn.run(
+        "app:app",
+        host="0.0.0.0",
+        port=8001,
+        reload=True
+    )

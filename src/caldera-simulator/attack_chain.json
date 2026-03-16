@@ -1,0 +1,62 @@
+[
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Reconnaissance",
+        "technique": "Phishing for Information"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Initial Access",
+        "technique": "Spear Phishing"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Execution",
+        "technique": "Command-Line Interface"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Persistence",
+        "technique": "Scheduled Task"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Privilege Escalation",
+        "technique": "Token Impersonation"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Defense Evasion",
+        "technique": "Unknown Technique"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Credential Access",
+        "technique": "Credential Dumping"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Discovery",
+        "technique": "System Network Discovery"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Lateral Movement",
+        "technique": "Pass the Hash"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Collection",
+        "technique": "Data from Local System"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Exfiltration",
+        "technique": "Exfiltration Over Web Service"
+    },
+    {
+        "timestamp": "2026-03-16T06:52:42.008510",
+        "tactic": "Command and Control",
+        "technique": "Encrypted Channel"
+    }
+]
