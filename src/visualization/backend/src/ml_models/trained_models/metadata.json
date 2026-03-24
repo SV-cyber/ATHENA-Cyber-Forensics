@@ -1,0 +1,13 @@
+{
+  "window_size": 12,
+  "stride": 1,
+  "feature_columns_hint": [
+    "tactic",
+    "event_type",
+    "severity",
+    "tactic_encoded",
+    "severity_encoded",
+    "mcdm_score"
+  ],
+  "random_state": 42
+}

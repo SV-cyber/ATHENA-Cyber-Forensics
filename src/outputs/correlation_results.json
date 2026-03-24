@@ -1,0 +1,1205 @@
+{
+  "attack_chains": [
+    {
+      "chain_id": "chain-0332836e-5c66-4b10-af5a-98df8bb13220",
+      "event_ids": [
+        "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5"
+      ],
+      "event_count": 13,
+      "chain_score": 0.5929,
+      "multi_stage": {
+        "is_multi_stage": true,
+        "event_count": 13,
+        "distinct_tactics": [
+          "Collection",
+          "Command and Control",
+          "Credential Access",
+          "Defense Evasion",
+          "Discovery",
+          "Execution",
+          "Exfiltration",
+          "Initial Access",
+          "Lateral Movement",
+          "Persistence",
+          "Privilege Escalation",
+          "Reconnaissance"
+        ]
+      }
+    }
+  ],
+  "graph": {
+    "nodes": [
+      {
+        "id": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "event": {
+          "event_id": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+          "timestamp": "2026-03-17T12:29:07.259520+00:00",
+          "source_ip": "10.19.92.70",
+          "destination_ip": "192.168.172.222",
+          "event_type": "Reconnaissance:T1592.002",
+          "tactic": "Reconnaissance",
+          "technique_id": "T1592.002",
+          "severity": "low",
+          "is_malicious": true,
+          "tactic_encoded": 0,
+          "severity_encoded": 0,
+          "mcdm_score": 7.45,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.47726842338990766,
+          "anomaly_score_iforest": -0.09098902938669129,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "event": {
+          "event_id": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+          "timestamp": "2026-03-17T12:29:15.273370+00:00",
+          "source_ip": "172.20.190.96",
+          "destination_ip": "192.168.36.250",
+          "event_type": "Initial Access:T1566.001",
+          "tactic": "Initial Access",
+          "technique_id": "T1566.001",
+          "severity": "high",
+          "is_malicious": true,
+          "tactic_encoded": 1,
+          "severity_encoded": 2,
+          "mcdm_score": 6.4,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.4972665561102908,
+          "anomaly_score_iforest": -0.010933884486203582,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "event": {
+          "event_id": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+          "timestamp": "2026-03-17T12:29:18.791784+00:00",
+          "source_ip": "10.138.183.55",
+          "destination_ip": "10.58.99.74",
+          "event_type": "Execution:T1059.001",
+          "tactic": "Execution",
+          "technique_id": "T1059.001",
+          "severity": "high",
+          "is_malicious": true,
+          "tactic_encoded": 2,
+          "severity_encoded": 2,
+          "mcdm_score": 7.05,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.4925900503177271,
+          "anomaly_score_iforest": -0.02964196893899057,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "event": {
+          "event_id": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+          "timestamp": "2026-03-17T12:29:24.819286+00:00",
+          "source_ip": "192.168.80.89",
+          "destination_ip": "192.168.40.33",
+          "event_type": "Persistence:T1547.001",
+          "tactic": "Persistence",
+          "technique_id": "T1547.001",
+          "severity": "high",
+          "is_malicious": true,
+          "tactic_encoded": 3,
+          "severity_encoded": 2,
+          "mcdm_score": 6.8,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.49211661428025827,
+          "anomaly_score_iforest": -0.031536156254619085,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "event": {
+          "event_id": "0332836e-5c66-4b10-af5a-98df8bb13220",
+          "timestamp": "2026-03-17T12:29:29.836282+00:00",
+          "source_ip": "172.16.128.189",
+          "destination_ip": "172.26.9.151",
+          "event_type": "Privilege Escalation:T1548.002",
+          "tactic": "Privilege Escalation",
+          "technique_id": "T1548.002",
+          "severity": "critical",
+          "is_malicious": true,
+          "tactic_encoded": 4,
+          "severity_encoded": 3,
+          "mcdm_score": 6.05,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.5011728191548002,
+          "anomaly_score_iforest": 0.004691285223060393,
+          "is_malicious_pred": 1
+        }
+      },
+      {
+        "id": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "event": {
+          "event_id": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+          "timestamp": "2026-03-17T12:29:35.849051+00:00",
+          "source_ip": "172.27.123.164",
+          "destination_ip": "192.168.17.240",
+          "event_type": "Defense Evasion:T1036.005",
+          "tactic": "Defense Evasion",
+          "technique_id": "T1036.005",
+          "severity": "high",
+          "is_malicious": true,
+          "tactic_encoded": 5,
+          "severity_encoded": 2,
+          "mcdm_score": 7.25,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.49128006065480456,
+          "anomaly_score_iforest": -0.03488329424497466,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "event": {
+          "event_id": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+          "timestamp": "2026-03-17T12:29:40.349749+00:00",
+          "source_ip": "10.27.167.253",
+          "destination_ip": "10.29.212.54",
+          "event_type": "Credential Access:T1552.002",
+          "tactic": "Credential Access",
+          "technique_id": "T1552.002",
+          "severity": "critical",
+          "is_malicious": true,
+          "tactic_encoded": 6,
+          "severity_encoded": 3,
+          "mcdm_score": 6.8,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.49579895338846736,
+          "anomaly_score_iforest": -0.016804581894350135,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "event": {
+          "event_id": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+          "timestamp": "2026-03-17T12:29:46.864421+00:00",
+          "source_ip": "10.163.229.127",
+          "destination_ip": "10.122.112.94",
+          "event_type": "Discovery:T1087.002",
+          "tactic": "Discovery",
+          "technique_id": "T1087.002",
+          "severity": "medium",
+          "is_malicious": true,
+          "tactic_encoded": 7,
+          "severity_encoded": 1,
+          "mcdm_score": 7.1,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.49354230003380556,
+          "anomaly_score_iforest": -0.025832236266068953,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "event": {
+          "event_id": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+          "timestamp": "2026-03-17T12:29:52.893847+00:00",
+          "source_ip": "192.168.111.18",
+          "destination_ip": "192.168.160.129",
+          "event_type": "Discovery:T1016",
+          "tactic": "Discovery",
+          "technique_id": "T1016",
+          "severity": "medium",
+          "is_malicious": true,
+          "tactic_encoded": 7,
+          "severity_encoded": 1,
+          "mcdm_score": 6.6,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.4930877831223393,
+          "anomaly_score_iforest": -0.027650629083460776,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "event": {
+          "event_id": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+          "timestamp": "2026-03-17T12:29:58.910435+00:00",
+          "source_ip": "172.23.102.156",
+          "destination_ip": "10.40.30.56",
+          "event_type": "Lateral Movement:T1021.006",
+          "tactic": "Lateral Movement",
+          "technique_id": "T1021.006",
+          "severity": "high",
+          "is_malicious": true,
+          "tactic_encoded": 8,
+          "severity_encoded": 2,
+          "mcdm_score": 7.2,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.47342090733527614,
+          "anomaly_score_iforest": -0.10641668346536526,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "event": {
+          "event_id": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+          "timestamp": "2026-03-17T12:30:04.925117+00:00",
+          "source_ip": "10.86.196.242",
+          "destination_ip": "192.168.63.194",
+          "event_type": "Collection:T1005",
+          "tactic": "Collection",
+          "technique_id": "T1005",
+          "severity": "medium",
+          "is_malicious": true,
+          "tactic_encoded": 9,
+          "severity_encoded": 1,
+          "mcdm_score": 6.8,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.4978219170666823,
+          "anomaly_score_iforest": -0.008712386842826436,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "event": {
+          "event_id": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+          "timestamp": "2026-03-17T12:30:14.939416+00:00",
+          "source_ip": "192.168.130.4",
+          "destination_ip": "192.168.150.90",
+          "event_type": "Exfiltration:T1041",
+          "tactic": "Exfiltration",
+          "technique_id": "T1041",
+          "severity": "critical",
+          "is_malicious": true,
+          "tactic_encoded": 10,
+          "severity_encoded": 3,
+          "mcdm_score": 6.7,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.4802790350478006,
+          "anomaly_score_iforest": -0.07892480367444926,
+          "is_malicious_pred": 0
+        }
+      },
+      {
+        "id": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "event": {
+          "event_id": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+          "timestamp": "2026-03-17T12:30:20.970983+00:00",
+          "source_ip": "172.23.67.236",
+          "destination_ip": "172.27.62.205",
+          "event_type": "Command and Control:T1071.001",
+          "tactic": "Command and Control",
+          "technique_id": "T1071.001",
+          "severity": "critical",
+          "is_malicious": true,
+          "tactic_encoded": 11,
+          "severity_encoded": 3,
+          "mcdm_score": 7.45,
+          "threat_actor": "APT28"
+        },
+        "prediction": {
+          "p_malicious_lstm": 0.5015487458917615,
+          "anomaly_score_iforest": 0.006195003379657726,
+          "is_malicious_pred": 1
+        }
+      }
+    ],
+    "edges": [
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "strength": 0.6695,
+        "gap_seconds": 8.01385,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "strength": 0.6676,
+        "gap_seconds": 11.532264,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "strength": 0.6049,
+        "gap_seconds": 17.559766,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "strength": 0.5833,
+        "gap_seconds": 22.576762,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "strength": 0.5599,
+        "gap_seconds": 28.589531,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "strength": 0.5383,
+        "gap_seconds": 33.090229,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.5152,
+        "gap_seconds": 39.604901,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.5125,
+        "gap_seconds": 45.634327,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.5083,
+        "gap_seconds": 51.650915,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.5075,
+        "gap_seconds": 57.665597,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.5017,
+        "gap_seconds": 67.679896,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "55b02c1a-dfb0-4f5d-8a76-3c1805fb9a93",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5007,
+        "gap_seconds": 73.711463,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "strength": 0.6727,
+        "gap_seconds": 3.518414,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "strength": 0.67,
+        "gap_seconds": 9.545916,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "strength": 0.6084,
+        "gap_seconds": 14.562912,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "strength": 0.585,
+        "gap_seconds": 20.575681,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "strength": 0.5633,
+        "gap_seconds": 25.076379,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.5403,
+        "gap_seconds": 31.591051,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.5376,
+        "gap_seconds": 37.620477,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.5134,
+        "gap_seconds": 43.637065,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.5126,
+        "gap_seconds": 49.651747,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.5068,
+        "gap_seconds": 59.666046,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "06b4ae6d-35bf-4bb3-a75f-715b8287efa6",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5057,
+        "gap_seconds": 65.697613,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "strength": 0.6712,
+        "gap_seconds": 6.027502,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "strength": 0.6696,
+        "gap_seconds": 11.044498,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "strength": 0.6062,
+        "gap_seconds": 17.057267,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "strength": 0.5845,
+        "gap_seconds": 21.557965,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.5615,
+        "gap_seconds": 28.072637,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.5588,
+        "gap_seconds": 34.102063,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.5346,
+        "gap_seconds": 40.118651,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.5138,
+        "gap_seconds": 46.133333,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.508,
+        "gap_seconds": 56.147632,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "dd6c9534-ee54-4ca4-b54a-8b96b105fd40",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5069,
+        "gap_seconds": 62.179199,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "strength": 0.6723,
+        "gap_seconds": 5.016996,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "strength": 0.6689,
+        "gap_seconds": 11.029765,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "strength": 0.6072,
+        "gap_seconds": 15.530463,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.5841,
+        "gap_seconds": 22.045135,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.5814,
+        "gap_seconds": 28.074561,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.5573,
+        "gap_seconds": 34.091149,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.5364,
+        "gap_seconds": 40.105831,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.5107,
+        "gap_seconds": 50.12013,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8ae262d3-acf1-450a-bb0d-0bf122990df6",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5096,
+        "gap_seconds": 56.151697,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "strength": 0.6718,
+        "gap_seconds": 6.012769,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "strength": 0.6701,
+        "gap_seconds": 10.513467,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.607,
+        "gap_seconds": 17.028139,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.6043,
+        "gap_seconds": 23.057565,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.5802,
+        "gap_seconds": 29.074153,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.5593,
+        "gap_seconds": 35.088835,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.5336,
+        "gap_seconds": 45.103134,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "0332836e-5c66-4b10-af5a-98df8bb13220",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5125,
+        "gap_seconds": 51.134701,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "strength": 0.672,
+        "gap_seconds": 4.500698,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.669,
+        "gap_seconds": 11.01537,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.6663,
+        "gap_seconds": 17.044796,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.6021,
+        "gap_seconds": 23.061384,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.5813,
+        "gap_seconds": 29.076066,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.5555,
+        "gap_seconds": 39.090365,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "78ea5adc-36d8-4295-9a36-6aa39b1da72c",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5344,
+        "gap_seconds": 45.121932,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "target": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "strength": 0.6713,
+        "gap_seconds": 6.514672,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.6686,
+        "gap_seconds": 12.544098,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.6644,
+        "gap_seconds": 18.560686,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.6036,
+        "gap_seconds": 24.575368,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.5778,
+        "gap_seconds": 34.589667,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "6f5230dc-89ad-439b-914a-3fe921bc4f76",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5567,
+        "gap_seconds": 40.621234,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "target": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "strength": 0.6713,
+        "gap_seconds": 6.029426,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.6672,
+        "gap_seconds": 12.046014,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.6663,
+        "gap_seconds": 18.060696,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.6006,
+        "gap_seconds": 28.074995,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "98895a47-5b8a-43a7-9626-9fdb222d11c9",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5795,
+        "gap_seconds": 34.106562,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "target": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "strength": 0.6698,
+        "gap_seconds": 6.016588,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.669,
+        "gap_seconds": 12.03127,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.6032,
+        "gap_seconds": 22.045569,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "c3a45998-54e1-4b66-bf87-4ad92f5c4ac0",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.5821,
+        "gap_seconds": 28.077136,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "target": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "strength": 0.6702,
+        "gap_seconds": 6.014682,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.6644,
+        "gap_seconds": 16.028981,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "8469e01a-d202-430e-bd69-5e6db2f9632b",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.6033,
+        "gap_seconds": 22.060548,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "target": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "strength": 0.6689,
+        "gap_seconds": 10.014299,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "b1c910eb-9760-4d00-92fe-562f796e0a4a",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.6678,
+        "gap_seconds": 16.045866,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      },
+      {
+        "source": "fcf338af-7041-4dd2-95e2-9ffe9921262a",
+        "target": "96b586f2-9501-4bdb-b24f-3e2f7d0e08a5",
+        "strength": 0.671,
+        "gap_seconds": 6.031567,
+        "reasons": [
+          "timestamp_proximity",
+          "technique_sequence",
+          "model_signal"
+        ]
+      }
+    ]
+  }
+}
