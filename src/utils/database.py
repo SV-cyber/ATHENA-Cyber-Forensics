@@ -22,7 +22,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class EventRecord(Base):
+class Event(Base):
     __tablename__ = "events"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
@@ -60,7 +60,7 @@ class DetectionResult(Base):
     is_malicious_pred: Mapped[Optional[bool]] = mapped_column(Boolean, nullable=True, index=True)
     raw_data: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSON, nullable=True)
 
-    event: Mapped[EventRecord] = relationship(back_populates="detections")
+    event: Mapped[Event] = relationship(back_populates="detections")
 
 
 class CorrelationRecord(Base):
@@ -109,4 +109,8 @@ def session_scope() -> Generator[Session, None, None]:
 def reset_pipeline_tables(session: Session) -> None:
     session.query(CorrelationRecord).delete()
     session.query(DetectionResult).delete()
-    session.query(EventRecord).delete()
+    session.query(Event).delete()
+
+
+# Backward-compatible alias for existing code paths that still import EventRecord.
+EventRecord = Event

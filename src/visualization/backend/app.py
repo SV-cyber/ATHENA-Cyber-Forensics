@@ -24,7 +24,10 @@ BASE_DIR = Path(__file__).resolve().parents[2]  # /src
 if str(BASE_DIR) not in sys.path:
     sys.path.append(str(BASE_DIR))
 
-from utils.database import CorrelationRecord, DetectionResult, EventRecord, ensure_schema, session_scope
+from utils.database import CorrelationRecord, DetectionResult, Event, ensure_schema, session_scope
+from visualization.backend.routers.detections import router as detections_router
+from visualization.backend.routers.events import router as events_router
+from visualization.backend.services.events import list_events, serialize_event
 
 
 PIPELINE_PATH = BASE_DIR / "main_pipeline.py"
@@ -86,6 +89,8 @@ app = FastAPI(
     description="AI-Driven Threat Hunting & Adversary Emulation",
     version="0.3.0",
 )
+app.include_router(events_router)
+app.include_router(detections_router)
 
 
 def _utc_now_iso() -> str:
@@ -107,31 +112,6 @@ def _normalize_pipeline_summary(raw: Dict[str, Any]) -> Dict[str, int]:
         "anomalies_detected": pick_int("anomalies_detected", "anomalies", default=0),
         "attack_chains_found": pick_int("attack_chains_found", "attack_chains", default=0),
     }
-
-
-def _serialize_event(event: EventRecord) -> Dict[str, Any]:
-    raw = dict(event.raw_data or {})
-    raw.update(
-        {
-            "db_id": event.id,
-            "event_id": event.event_uid,
-            "event_name": event.event_name,
-            "timestamp": event.timestamp.isoformat() if event.timestamp else None,
-            "source_ip": event.source_ip,
-            "destination_ip": event.destination_ip,
-            "event_type": event.event_type,
-            "tactic": event.tactic,
-            "technique_id": event.technique_id,
-            "severity": event.severity,
-            "is_malicious": event.is_malicious,
-            "tactic_encoded": event.tactic_encoded,
-            "severity_encoded": event.severity_encoded,
-            "mcdm_score": event.mcdm_score,
-            "threat_actor": event.threat_actor,
-            "threat_feed_hit": event.threat_feed_hit,
-        }
-    )
-    return raw
 
 
 def _serialize_detection(detection: DetectionResult, event_uid: str | None = None) -> Dict[str, Any]:
@@ -165,9 +145,9 @@ def _build_attack_chain_payload() -> Dict[str, Any]:
             .order_by(CorrelationRecord.id.asc())
             .all()
         )
-        events = session.query(EventRecord).all()
+        events = session.query(Event).all()
 
-    events_by_uid = {event.event_uid: _serialize_event(event) for event in events}
+    events_by_uid = {event.event_uid: serialize_event(event) for event in events}
     db_id_to_uid = {event["db_id"]: event["event_id"] for event in events_by_uid.values()}
 
     chains: Dict[str, List[Dict[str, Any]]] = {}
@@ -205,17 +185,15 @@ def _build_attack_chain_payload() -> Dict[str, Any]:
 
 def _get_events_payload() -> Dict[str, Any]:
     with session_scope() as session:
-        rows = session.query(EventRecord).order_by(EventRecord.timestamp.asc(), EventRecord.id.asc()).all()
-
-    data = [_serialize_event(row) for row in rows]
+        data = list_events(session)
     return {"count": len(data), "data": data}
 
 
 def _get_detections_payload() -> Dict[str, Any]:
     with session_scope() as session:
         rows = (
-            session.query(DetectionResult, EventRecord.event_uid)
-            .join(EventRecord, DetectionResult.event_id == EventRecord.id)
+            session.query(DetectionResult, Event.event_uid)
+            .join(Event, DetectionResult.event_id == Event.id)
             .order_by(DetectionResult.detected_at.asc(), DetectionResult.id.asc())
             .all()
         )
@@ -261,11 +239,6 @@ async def run_pipeline() -> PipelineRunResponse:
     except Exception as exc:
         logger.exception("Pipeline run failed")
         raise HTTPException(status_code=500, detail=f"Pipeline failed: {exc}") from exc
-
-
-@app.get("/events")
-async def events() -> Dict[str, Any]:
-    return _get_events_payload()
 
 
 @app.get("/results")
