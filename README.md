@@ -1,97 +1,185 @@
-﻿# ATHENA: AI-Driven Threat Hunting \& Adversary Emulation
+# ATHENA: AI-Driven Threat Hunting & Adversary Emulation Platform
 
-**MSc Cyber Forensics Dissertation Project**  
-**Author**: SV-cyber  
-**Timeline**: March 11 - April 15, 2026  
-**Status**: 🟢 In Development
+**MSc Cyber Forensics Dissertation Project**
+**Author:** SV-cyber (Sundaram Vishal)
+**Timeline:** March 11 – April 15, 2026
+**Status:** 🟢 Functional System (Integrated Pipeline Complete)
 
-## Overview
+---
 
-ATHENA is a production-ready threat hunting platform that combines:
+## 🚀 Overview
 
-* **Adversary Emulation**: MITRE CALDERA integration for realistic attack simulation
-* **Machine Learning**: CNN-LSTM hybrid models for anomaly detection (99.6% accuracy)
-* **Forensic Analysis**: Multi-dimensional correlation engine for attack chain reconstruction
-* **Real-time Visualization**: Interactive Mapbox threat dashboard
-* **Academic Research**: Comprehensive dissertation with methodology \& results
+ATHENA is a **full-stack cyber threat analysis platform** that simulates adversary behavior, detects anomalies using machine learning, and reconstructs attack chains using correlation logic.
 
-## Quick Start (Windows 11)
+It evolved from a **file-based prototype** into a **database-driven, event-oriented system** capable of end-to-end threat analysis.
+
+---
+
+## 🧠 Core Architecture
+
+```
+Simulation → Event Normalization → Event Bus → ML Detection → Correlation Engine → PostgreSQL → FastAPI → Dashboard
+```
+
+---
+
+## 🔥 Key Features
+
+### ⚔️ Adversary Emulation
+
+* Simulates real-world attacks based on MITRE ATT&CK techniques
+* Multi-stage attack chain generation (APT28-style campaigns)
+
+### 🧪 Event Processing
+
+* Normalizes raw mission logs into structured security events
+* Feature engineering (tactics, severity, encoded signals)
+
+### 🤖 Machine Learning Detection
+
+* Isolation Forest for anomaly detection
+* LSTM-ready architecture (optional TensorFlow integration)
+* Detects suspicious behavioral patterns
+
+### 🔗 Correlation Engine
+
+* Builds graph-based attack relationships
+* Reconstructs complete attack chains
+* Identifies lateral movement & multi-stage attacks
+
+### ⚡ Event-Driven Pipeline
+
+* Internal event bus for modular processing
+* Decoupled architecture between stages
+
+### 🗄️ Database Integration
+
+* PostgreSQL-backed persistence
+* Stores events, detections, and correlations
+* Eliminates CSV/JSON dependency
+
+### 🌐 API Layer (FastAPI)
+
+* `/run-pipeline` → execute full simulation
+* `/events` → fetch normalized events
+* `/detections` → anomaly results
+* `/attack-chains` → reconstructed attack paths
+* `/health` → system status
+
+### 📊 Visualization Dashboard
+
+* Streamlit-based SOC-style dashboard
+* Timeline, attack chains, MITRE mapping, logs view
+
+---
+
+## ⚙️ Quick Start (Windows 11)
 
 ### Prerequisites
 
 * Python 3.9+
 * Docker Desktop
-* Node.js 16+
 * Git
 
-### Setup
+---
 
-\\\\powershell
+### 🔧 Setup
 
-# Clone and setup
-
+```powershell
 git clone https://github.com/SV-cyber/ATHENA-Cyber-Forensics.git
-cd ATHENA
+cd ATHENA-Cyber-Forensics
+
 python -m venv venv
-.\\venv\\Scripts\\Activate.ps1
+.\venv\Scripts\activate
+
 pip install -r requirements.txt
+```
 
-# Start Docker containers
+---
 
-docker-compose up -d
+### 🐳 Start Services
 
-# Verify database
+```powershell
+docker compose up -d
+```
 
-docker-compose logs postgres
-\\\\
+---
 
-### Run Backend
+### ▶️ Run Pipeline
 
-\\\\powershell
-python src/visualization/backend/app.py
+```powershell
+python src/main_pipeline.py
+```
 
-# Visit http://localhost:8000/health
+---
 
-\\\\
+### 🌐 Start Backend API
 
-## Project Structure
+```powershell
+uvicorn src.visualization.backend.app:app --reload --port 8001
+```
 
-\\  
+Open:
+👉 http://localhost:8001/docs
+
+---
+
+### 📊 Run Dashboard
+
+```powershell
+streamlit run src/visualization/frontend/app.py
+```
+
+---
+
+## 📁 Project Structure
+
+```
 src/
-├── caldera-simulator/      # Attack emulation
-├── data-collection/        # Log processing \& labeling
-├── ml-models/              # Detection models (CNN-LSTM, GraphSAGE)
-├── correlation-engine/     # Forensic analysis
-├── visualization/          # API + React dashboard
-├── forensics/              # Report generation
-└── utils/                  # Helpers \& config
-\\\\
+├── caldera-simulator/      # Adversary emulation
+├── data_collection/        # Event normalization & ingestion
+├── ml-models/              # ML training & detection
+├── correlation-engine/     # Attack chain reconstruction
+├── visualization/          # FastAPI + Streamlit dashboard
+├── utils/                  # Config, DB, event bus
+├── main_pipeline.py        # Orchestrates full system
+```
 
-## Timeline
+---
 
-|Week|Focus|Status|
-|-|-|-|
-|1|Setup \& Architecture|✅ Completed |
-|2-3|Component Development|🔄 In Progress|
-|4-5|ML Training \& Testing|⏳ Pending|
-|6-7|Visualization \& API|⏳ Pending|
-|8-10|Dissertation \& Polish|⏳ Pending|
+## 📊 System Output Example
 
-## Next Steps
+* Total Events: 13
+* Anomalies Detected: 2
+* Attack Chains: 1
 
-1. Complete repository setup
-2. Generate components with Claude 3.5
-3. Integrate and test
-4. Train ML models
-5. Write dissertation
+---
 
-## Documentation
+## 🧠 Key Innovation
 
-* [SETUP\_GUIDE.md](docs/SETUP_GUIDE.md) - Detailed setup
-* [ARCHITECTURE.md](docs/ARCHITECTURE.md) - System design
-* [DISSERTATION.md](docs/DISSERTATION.md) - Academic paper
+> ATHENA transitions from a static analysis pipeline to a **dynamic, event-driven cyber threat intelligence system** with real-time processing capability.
 
-## License
+---
 
-MIT License - See LICENSE file
+## 🛠️ Technologies Used
 
+* Python, FastAPI
+* PostgreSQL, SQLAlchemy
+* Scikit-learn (Isolation Forest)
+* Streamlit
+* Docker
+* MITRE ATT&CK framework
+
+---
+
+## 📚 Documentation
+
+* `ARCHITECTURE.md` – System design
+* `SETUP_GUIDE.md` – Detailed setup instructions
+* `DISSERTATION.md` – Academic research paper
+
+---
+
+## 📜 License
+
+MIT License
