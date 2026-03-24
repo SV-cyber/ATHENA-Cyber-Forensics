@@ -11,14 +11,23 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS events (
     id SERIAL PRIMARY KEY,
-    event_name VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    event_uid VARCHAR(64) UNIQUE NOT NULL,
+    event_name VARCHAR(255),
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     source_ip VARCHAR(45),
     destination_ip VARCHAR(45),
     event_type VARCHAR(100),
+    tactic VARCHAR(100),
+    technique_id VARCHAR(64),
     severity VARCHAR(20),
-    raw_data TEXT,
-    is_malicious BOOLEAN DEFAULT FALSE
+    is_malicious BOOLEAN DEFAULT FALSE,
+    tactic_encoded INTEGER,
+    severity_encoded INTEGER,
+    mcdm_score FLOAT,
+    threat_actor VARCHAR(100),
+    threat_feed_hit BOOLEAN DEFAULT FALSE,
+    raw_data JSONB,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS attack_scenarios (
@@ -32,18 +41,27 @@ CREATE TABLE IF NOT EXISTS attack_scenarios (
 
 CREATE TABLE IF NOT EXISTS detection_results (
     id SERIAL PRIMARY KEY,
-    event_id INTEGER REFERENCES events(id),
+    event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
     model_name VARCHAR(100),
     confidence_score FLOAT,
-    detected_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_true_positive BOOLEAN
+    anomaly_score FLOAT,
+    detected_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    is_true_positive BOOLEAN,
+    is_malicious_pred BOOLEAN,
+    raw_data JSONB
 );
 
 CREATE TABLE IF NOT EXISTS correlations (
     id SERIAL PRIMARY KEY,
-    parent_event_id INTEGER REFERENCES events(id),
-    child_event_id INTEGER REFERENCES events(id),
+    chain_id VARCHAR(100),
+    parent_event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
+    child_event_id INTEGER REFERENCES events(id) ON DELETE CASCADE,
     correlation_type VARCHAR(100),
     strength FLOAT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    gap_seconds FLOAT,
+    chain_score FLOAT,
+    is_multi_stage BOOLEAN,
+    reasons JSONB,
+    raw_data JSONB,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );

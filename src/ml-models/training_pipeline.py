@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import json
 import logging
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -42,6 +43,13 @@ try:
 except ModuleNotFoundError:  # pragma: no cover
     keras = None  # type: ignore[assignment]
     layers = None  # type: ignore[assignment]
+
+
+SRC_ROOT = Path(__file__).resolve().parents[1]
+if str(SRC_ROOT) not in sys.path:
+    sys.path.append(str(SRC_ROOT))
+
+from utils.event_bus import EventBus
 
 
 def _setup_logger() -> logging.Logger:
@@ -189,6 +197,21 @@ class ThreatDetectionModel:
         )
 
         return X_train_seq, X_test_seq, y_train_seq, y_test_seq, X_train_flat, X_test_flat
+
+    def consume_events(self, bus: EventBus, *, fallback_df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
+        """
+        Consume normalized events from the event bus and return a DataFrame.
+        Falls back to the provided DataFrame if the bus is empty.
+        """
+        events = bus.consume_all()
+        if events:
+            df = pd.DataFrame(events)
+            self.logger.info("Consumed %d events from event bus for ML stage", len(df))
+            return df
+        if fallback_df is not None:
+            self.logger.info("Event bus empty; using fallback DataFrame with %d rows", len(fallback_df))
+            return fallback_df.copy()
+        raise ValueError("No events available on event bus and no fallback DataFrame provided.")
 
     def _make_sequence_windows(self, X: np.ndarray, y: np.ndarray, *, window_size: int, stride: int) -> Tuple[np.ndarray, np.ndarray]:
         """

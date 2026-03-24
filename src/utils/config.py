@@ -21,7 +21,10 @@ class DatabaseConfig:
 
     @staticmethod
     def connection_string():
-        return f"postgresql://{DatabaseConfig.USER}:{DatabaseConfig.PASSWORD}@{DatabaseConfig.HOST}:{DatabaseConfig.PORT}/{DatabaseConfig.DB}"
+        return (
+            f"postgresql+psycopg2://{DatabaseConfig.USER}:{DatabaseConfig.PASSWORD}"
+            f"@{DatabaseConfig.HOST}:{DatabaseConfig.PORT}/{DatabaseConfig.DB}"
+        )
 
 
 class RedisConfig:

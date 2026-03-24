@@ -1,38 +1,32 @@
 """
 ATHENA Backend - FastAPI Server
 
-Production-ready backend endpoints for running ATHENA pipeline and retrieving results.
-
-Run:
-    uvicorn app:app --reload --port 8001
+Database-backed API for running the ATHENA pipeline and retrieving results.
 """
 
 from __future__ import annotations
 
 import asyncio
+import csv
 import importlib.util
-import json
+import io
 import logging
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
-import pandas as pd
 
-APP_ROOT = Path(__file__).resolve().parent  # src/visualization/backend
-REPO_ROOT = APP_ROOT.parents[2]  # src/
+BASE_DIR = Path(__file__).resolve().parents[2]  # /src
+if str(BASE_DIR) not in sys.path:
+    sys.path.append(str(BASE_DIR))
 
-OUTPUTS_DIR = REPO_ROOT / "outputs"
-DATASET_CSV = OUTPUTS_DIR / "normalized_events.csv"
-CORRELATION_JSON = OUTPUTS_DIR / "correlation_results.json"
+from utils.database import CorrelationRecord, DetectionResult, EventRecord, ensure_schema, session_scope
 
-from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parents[2]  # goes to /src
 PIPELINE_PATH = BASE_DIR / "main_pipeline.py"
 
 
@@ -87,17 +81,10 @@ class PipelineRunResponse(BaseModel):
     timestamp: str
 
 
-class FileInfoResponse(BaseModel):
-    path: str
-    exists: bool
-    size_bytes: Optional[int] = None
-    modified_at: Optional[str] = None
-
-
 app = FastAPI(
     title="ATHENA API",
     description="AI-Driven Threat Hunting & Adversary Emulation",
-    version="0.2.0",
+    version="0.3.0",
 )
 
 
@@ -105,31 +92,14 @@ def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _stat_file(path: Path) -> FileInfoResponse:
-    if not path.exists():
-        return FileInfoResponse(path=str(path), exists=False)
-
-    st = path.stat()
-    return FileInfoResponse(
-        path=str(path),
-        exists=True,
-        size_bytes=int(st.st_size),
-        modified_at=datetime.fromtimestamp(st.st_mtime, tz=timezone.utc).isoformat(),
-    )
-
-
 def _normalize_pipeline_summary(raw: Dict[str, Any]) -> Dict[str, int]:
-    """
-    Accepts multiple possible summary key shapes and normalizes them to:
-        total_events, anomalies_detected, attack_chains_found
-    """
     def pick_int(*keys: str, default: int = 0) -> int:
-        for k in keys:
-            v = raw.get(k)
-            if isinstance(v, bool):
+        for key in keys:
+            value = raw.get(key)
+            if isinstance(value, bool):
                 continue
-            if isinstance(v, (int, float)) and str(v).strip() != "":
-                return int(v)
+            if isinstance(value, (int, float)):
+                return int(value)
         return default
 
     return {
@@ -139,18 +109,136 @@ def _normalize_pipeline_summary(raw: Dict[str, Any]) -> Dict[str, int]:
     }
 
 
+def _serialize_event(event: EventRecord) -> Dict[str, Any]:
+    raw = dict(event.raw_data or {})
+    raw.update(
+        {
+            "db_id": event.id,
+            "event_id": event.event_uid,
+            "event_name": event.event_name,
+            "timestamp": event.timestamp.isoformat() if event.timestamp else None,
+            "source_ip": event.source_ip,
+            "destination_ip": event.destination_ip,
+            "event_type": event.event_type,
+            "tactic": event.tactic,
+            "technique_id": event.technique_id,
+            "severity": event.severity,
+            "is_malicious": event.is_malicious,
+            "tactic_encoded": event.tactic_encoded,
+            "severity_encoded": event.severity_encoded,
+            "mcdm_score": event.mcdm_score,
+            "threat_actor": event.threat_actor,
+            "threat_feed_hit": event.threat_feed_hit,
+        }
+    )
+    return raw
+
+
+def _serialize_detection(detection: DetectionResult, event_uid: str | None = None) -> Dict[str, Any]:
+    raw = dict(detection.raw_data or {})
+    raw.update(
+        {
+            "id": detection.id,
+            "event_id": event_uid,
+            "model_name": detection.model_name,
+            "confidence_score": detection.confidence_score,
+            "anomaly_score": detection.anomaly_score,
+            "detected_at": detection.detected_at.isoformat() if detection.detected_at else None,
+            "is_true_positive": detection.is_true_positive,
+            "is_malicious_pred": detection.is_malicious_pred,
+        }
+    )
+    return raw
+
+
+def _build_attack_chain_payload() -> Dict[str, Any]:
+    with session_scope() as session:
+        summary_rows = (
+            session.query(CorrelationRecord)
+            .filter(CorrelationRecord.correlation_type == "chain_summary")
+            .order_by(CorrelationRecord.chain_score.desc().nullslast(), CorrelationRecord.id.asc())
+            .all()
+        )
+        edge_rows = (
+            session.query(CorrelationRecord)
+            .filter(CorrelationRecord.correlation_type == "event_edge")
+            .order_by(CorrelationRecord.id.asc())
+            .all()
+        )
+        events = session.query(EventRecord).all()
+
+    events_by_uid = {event.event_uid: _serialize_event(event) for event in events}
+    db_id_to_uid = {event["db_id"]: event["event_id"] for event in events_by_uid.values()}
+
+    chains: Dict[str, List[Dict[str, Any]]] = {}
+    attack_chains: List[Dict[str, Any]] = []
+
+    for row in summary_rows:
+        chain = dict(row.raw_data or {})
+        chain_id = str(row.chain_id or chain.get("chain_id") or f"chain-{row.id}")
+        event_ids = [str(event_id) for event_id in chain.get("event_ids", [])]
+        chains[chain_id] = [events_by_uid[event_id] for event_id in event_ids if event_id in events_by_uid]
+        chain["chain_id"] = chain_id
+        chain["chain_score"] = row.chain_score if row.chain_score is not None else chain.get("chain_score")
+        attack_chains.append(chain)
+
+    graph_edges = []
+    for row in edge_rows:
+        graph_edges.append(
+            {
+                "source": db_id_to_uid.get(row.parent_event_id),
+                "target": db_id_to_uid.get(row.child_event_id),
+                "strength": row.strength,
+                "gap_seconds": row.gap_seconds,
+                "reasons": list(row.reasons or []),
+                "chain_id": row.chain_id,
+            }
+        )
+
+    return {
+        "chains": chains,
+        "attack_chains": attack_chains,
+        "graph": {"edges": graph_edges},
+        "count": len(attack_chains),
+    }
+
+
+def _get_events_payload() -> Dict[str, Any]:
+    with session_scope() as session:
+        rows = session.query(EventRecord).order_by(EventRecord.timestamp.asc(), EventRecord.id.asc()).all()
+
+    data = [_serialize_event(row) for row in rows]
+    return {"count": len(data), "data": data}
+
+
+def _get_detections_payload() -> Dict[str, Any]:
+    with session_scope() as session:
+        rows = (
+            session.query(DetectionResult, EventRecord.event_uid)
+            .join(EventRecord, DetectionResult.event_id == EventRecord.id)
+            .order_by(DetectionResult.detected_at.asc(), DetectionResult.id.asc())
+            .all()
+        )
+
+    data = [_serialize_detection(detection, event_uid=event_uid) for detection, event_uid in rows]
+    return {"count": len(data), "data": data}
+
+
 async def _run_pipeline_in_thread() -> Dict[str, Any]:
-    """
-    Run AthenaPipeline in a worker thread to avoid blocking the event loop.
-    """
     AthenaPipeline = _load_attr_from_path(PIPELINE_PATH, "AthenaPipeline")
     PipelineConfig = _load_attr_from_path(PIPELINE_PATH, "PipelineConfig")
 
     def _runner() -> Dict[str, Any]:
+        ensure_schema()
         pipeline = AthenaPipeline(config=PipelineConfig(threat_actor="APT28"))
         return pipeline.run_full_pipeline()
 
     return await asyncio.to_thread(_runner)
+
+
+@app.on_event("startup")
+def startup() -> None:
+    ensure_schema()
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -165,67 +253,61 @@ async def run_pipeline() -> PipelineRunResponse:
         raw_summary = await _run_pipeline_in_thread()
         if not isinstance(raw_summary, dict):
             raise RuntimeError("Pipeline returned non-dict summary")
-
         normalized = _normalize_pipeline_summary(raw_summary)
         return PipelineRunResponse(**normalized, timestamp=_utc_now_iso())
-    except FileNotFoundError as e:
+    except FileNotFoundError as exc:
         logger.exception("Pipeline file missing")
-        raise HTTPException(status_code=500, detail=f"Pipeline file not found: {e}") from e
-    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Pipeline file not found: {exc}") from exc
+    except Exception as exc:
         logger.exception("Pipeline run failed")
-        raise HTTPException(status_code=500, detail=f"Pipeline failed: {e}") from e
+        raise HTTPException(status_code=500, detail=f"Pipeline failed: {exc}") from exc
+
+
+@app.get("/events")
+async def events() -> Dict[str, Any]:
+    return _get_events_payload()
 
 
 @app.get("/results")
 async def results() -> Dict[str, Any]:
-    """Return actual results from normalized_events.csv"""
-    if not DATASET_CSV.exists():
-        raise HTTPException(
-            status_code=404,
-            detail=f"Results dataset not found. Expected at {DATASET_CSV}. Run POST /run-pipeline first.",
-        )
-    try:
-        df = pd.read_csv(DATASET_CSV)
-        # Convert timestamp to ISO format strings if they aren't already
-        return {
-            "count": len(df),
-            "data": df.to_dict(orient="records"),
-            "file_info": _stat_file(DATASET_CSV)
-        }
-    except Exception as e:
-        logger.exception("Failed to read results CSV")
-        raise HTTPException(status_code=500, detail=str(e)) from e
+    # Backward-compatible alias for the existing frontend pages.
+    return _get_events_payload()
 
 
-@app.get("/export-csv")
-async def export_csv():
-    if not DATASET_CSV.exists():
-        raise HTTPException(status_code=404, detail="CSV file not found")
-    return FileResponse(
-        path=DATASET_CSV,
-        media_type="text/csv",
-        filename="athena_threat_intelligence.csv"
-    )
+@app.get("/detections")
+async def detections() -> Dict[str, Any]:
+    return _get_detections_payload()
 
 
 @app.get("/attack-chains")
 async def attack_chains() -> Dict[str, Any]:
-    if not CORRELATION_JSON.exists():
-        raise HTTPException(
-            status_code=404,
-            detail=f"Correlation results not found. Expected at {CORRELATION_JSON}. Run POST /run-pipeline first.",
-        )
+    payload = _build_attack_chain_payload()
+    if not payload["attack_chains"]:
+        raise HTTPException(status_code=404, detail="No attack chains found. Run POST /run-pipeline first.")
+    return payload
 
-    try:
-        data = json.loads(CORRELATION_JSON.read_text(encoding="utf-8"))
-        if not isinstance(data, dict):
-            raise ValueError("correlation_results.json is not a JSON object")
-        return data
-    except json.JSONDecodeError as e:
-        logger.exception("Failed to parse correlation JSON")
-        raise HTTPException(status_code=500, detail=f"Invalid correlation JSON: {e}") from e
+
+@app.get("/export-csv")
+async def export_csv() -> StreamingResponse:
+    payload = _get_events_payload()
+    rows = payload["data"]
+    if not rows:
+        raise HTTPException(status_code=404, detail="No events found. Run POST /run-pipeline first.")
+
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=list(rows[0].keys()))
+    writer.writeheader()
+    writer.writerows(rows)
+    buffer.seek(0)
+
+    return StreamingResponse(
+        iter([buffer.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=athena_threat_intelligence.csv"},
+    )
 
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8001)

@@ -58,6 +58,21 @@ class AthenaAPIClient:
             return {}
 
     @staticmethod
+    @st.cache_data(ttl=300)
+    def get_detections() -> Optional[pd.DataFrame]:
+        """Fetch persisted detection results from backend."""
+        try:
+            response = requests.get(f"{API_BASE_URL}/detections", timeout=30)
+            response.raise_for_status()
+            data = response.json()
+            if "data" in data:
+                return pd.DataFrame(data["data"])
+            return None
+        except Exception as e:
+            st.error(f"Failed to fetch detections: {e}")
+            return None
+
+    @staticmethod
     def get_export_url() -> str:
         """Return the CSV export URL."""
         return f"{API_BASE_URL}/export-csv"
