@@ -8,7 +8,8 @@ from contextlib import contextmanager
 from datetime import datetime, timezone
 from typing import Any, Dict, Generator, Optional
 
-from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy import JSON, Boolean, CheckConstraint, DateTime, Float, ForeignKey, Integer, String, Text, create_engine
+from sqlalchemy.dialects.postgresql import INET, JSONB
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship, sessionmaker
 
 from .config import DatabaseConfig
@@ -80,6 +81,52 @@ class CorrelationRecord(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now)
 
 
+class AttackScenario(Base):
+    __tablename__ = "attack_scenarios"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    scenario_name: Mapped[str] = mapped_column(String(255), index=True)
+    mitre_tactic: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    mitre_technique: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now)
+
+
+class Alert(Base):
+    __tablename__ = "alerts"
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('active', 'acknowledged', 'resolved', 'throttled')",
+            name="alerts_status_check",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    alert_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, index=True)
+    source_ip: Mapped[Optional[str]] = mapped_column(INET, nullable=True, index=True)
+    event_type: Mapped[Optional[str]] = mapped_column(String(100), nullable=True, index=True)
+    severity: Mapped[Optional[str]] = mapped_column(String(20), nullable=True, index=True)
+    rule_alerts: Mapped[Optional[list[Dict[str, Any]]]] = mapped_column(JSONB, nullable=True)
+    ml_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    duplicate_count: Mapped[int] = mapped_column(Integer, default=1)
+    status: Mapped[str] = mapped_column(String(20), default="active", index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, onupdate=_utc_now)
+
+
+class ScenarioExecution(Base):
+    __tablename__ = "scenario_executions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    execution_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    scenario_name: Mapped[str] = mapped_column(String(255), index=True)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_utc_now, index=True)
+    completed_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
+    events_generated: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(32), default="running", index=True)
+
+
 engine = create_engine(
     DatabaseConfig.connection_string(),
     future=True,
@@ -107,6 +154,7 @@ def session_scope() -> Generator[Session, None, None]:
 
 
 def reset_pipeline_tables(session: Session) -> None:
+    session.query(Alert).delete()
     session.query(CorrelationRecord).delete()
     session.query(DetectionResult).delete()
     session.query(Event).delete()

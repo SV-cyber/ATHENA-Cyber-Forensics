@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, BackgroundTasks, Depends, Query
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from ..dependencies import get_db
 from ..schemas.events import EventCreate, EventIngestResponse, EventListResponse, EventResponse
-from ..services.events import create_event, list_events, normalize_event_payload, process_event_async
+from ..services.events import create_event, list_events, normalize_event_payload, serialize_event
 from utils.database import Event
+from utils.event_bus import event_bus
 
 
 router = APIRouter(tags=["events"])
@@ -15,7 +16,6 @@ router = APIRouter(tags=["events"])
 @router.post("/events", response_model=EventIngestResponse, status_code=201)
 def ingest_event(
     payload: EventCreate,
-    background_tasks: BackgroundTasks,
     async_process: bool = Query(default=False),
     db: Session = Depends(get_db),
 ) -> EventIngestResponse:
@@ -44,7 +44,7 @@ def ingest_event(
     db.add(event)
     db.commit()
     db.refresh(event)
-    background_tasks.add_task(process_event_async, event.id)
+    event_bus.publish(serialize_event(event))
 
     response = EventIngestResponse.model_validate(
         {
@@ -68,7 +68,7 @@ def ingest_event(
             "tag": normalized["raw_data"].get("tag", "normal"),
             "detections": [],
             "correlation": None,
-            "processing_mode": "background",
+            "processing_mode": "queued",
         }
     )
     return response

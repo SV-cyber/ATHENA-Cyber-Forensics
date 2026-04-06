@@ -12,10 +12,18 @@ import csv
 import json
 import logging
 import os
+import sys
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Literal, Optional, Sequence, Tuple
+
+BASE_DIR = Path(__file__).resolve().parents[1]
+if str(BASE_DIR) not in sys.path:
+    sys.path.append(str(BASE_DIR))
+
+from simulation.mitre_mapper import MITREAttackMapper
+from simulation.scenarios import ScenarioLibrary
 
 
 Platform = Literal["windows", "linux", "macos"]
@@ -137,6 +145,8 @@ class AdversaryOperator:
         self.attack_chain: List[AttackStep] = []
         self.mission_log: List[Dict[str, Any]] = []
         self.output_path = output_path or Path("src/caldera-simulator/attack_chain.json")
+        self.mitre_mapper = MITREAttackMapper()
+        self.scenario_library = ScenarioLibrary()
 
     def _get_threat_actor_profile(self, threat_actor: str) -> ThreatActorProfile:
         actor = (threat_actor or "UNKNOWN").strip().upper()
@@ -659,9 +669,38 @@ class AdversaryOperator:
             }
             chain_dicts.append(step_dict)
 
+        chain_dicts = self.mitre_mapper.map_attack_chain(chain_dicts)
+
         self.logger.info("Generated attack chain: actor=%s steps=%d", profile.name, len(chain_dicts))
         self._write_chain(chain_dicts)
         return chain_dicts
+
+    def run_scenario(self, scenario_name: str) -> List[Dict[str, Any]]:
+        events = self.scenario_library.generate_events(scenario_name)
+        self.mission_log = []
+        for event in events:
+            raw = dict(event.get("raw_data") or {})
+            step = {
+                "tactic": event.get("tactic"),
+                "technique_id": event.get("technique_id"),
+                "technique_name": raw.get("mitre_technique") or event.get("event_name"),
+                "mitre_tactic": raw.get("mitre_tactic"),
+                "mitre_tactic_id": raw.get("mitre_tactic_id"),
+                "mitre_technique": raw.get("mitre_technique"),
+                "mitre_technique_id": raw.get("mitre_technique_id"),
+                "event_type": event.get("event_type"),
+                "severity": event.get("severity"),
+            }
+            self.mission_log.append(
+                {
+                    "timestamp": event["timestamp"].isoformat() if hasattr(event["timestamp"], "isoformat") else str(event["timestamp"]),
+                    "threat_actor": event.get("threat_actor"),
+                    "status": "success",
+                    "step": step,
+                    "artifacts": raw,
+                }
+            )
+        return events
 
     async def execute_attack_chain(self, threat_actor: str) -> List[Dict[str, Any]]:
         """

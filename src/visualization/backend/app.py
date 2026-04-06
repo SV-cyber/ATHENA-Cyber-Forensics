@@ -25,8 +25,14 @@ if str(BASE_DIR) not in sys.path:
     sys.path.append(str(BASE_DIR))
 
 from utils.database import CorrelationRecord, DetectionResult, Event, ensure_schema, session_scope
+from utils.event_bus import event_bus
+from simulation.mitre_mapper import MITREAttackMapper
+from simulation.scenarios import ScenarioLibrary
+from visualization.backend.routers.alerts import router as alerts_router
 from visualization.backend.routers.detections import router as detections_router
 from visualization.backend.routers.events import router as events_router
+from visualization.backend.routers.simulation import router as simulation_router
+from visualization.backend.routers.threat_map import router as threat_map_router
 from visualization.backend.services.events import list_events, serialize_event
 
 
@@ -89,8 +95,11 @@ app = FastAPI(
     description="AI-Driven Threat Hunting & Adversary Emulation",
     version="0.3.0",
 )
+app.include_router(alerts_router)
 app.include_router(events_router)
 app.include_router(detections_router)
+app.include_router(simulation_router)
+app.include_router(threat_map_router)
 
 
 def _utc_now_iso() -> str:
@@ -183,6 +192,30 @@ def _build_attack_chain_payload() -> Dict[str, Any]:
     }
 
 
+def _build_mitre_attack_chain_payload() -> Dict[str, Any]:
+    payload = _build_attack_chain_payload()
+    mapper = MITREAttackMapper()
+
+    mitre_chains: List[Dict[str, Any]] = []
+    for chain in payload["attack_chains"]:
+        chain_id = str(chain.get("chain_id") or "")
+        events = payload["chains"].get(chain_id, [])
+        mapped_events = mapper.map_attack_chain(events)
+        mitre_chains.append(
+            {
+                **chain,
+                "events": mapped_events,
+                "mitre_progression_valid": all(bool(item.get("mitre_progression_valid", True)) for item in mapped_events),
+            }
+        )
+
+    return {
+        "count": len(mitre_chains),
+        "attack_chains": mitre_chains,
+        "graph": payload["graph"],
+    }
+
+
 def _get_events_payload() -> Dict[str, Any]:
     with session_scope() as session:
         data = list_events(session)
@@ -217,11 +250,20 @@ async def _run_pipeline_in_thread() -> Dict[str, Any]:
 @app.on_event("startup")
 def startup() -> None:
     ensure_schema()
+    with session_scope() as session:
+        ScenarioLibrary().sync_to_db(session)
 
 
 @app.get("/health", response_model=HealthResponse)
 async def health() -> HealthResponse:
     return HealthResponse(status="ok", timestamp=_utc_now_iso())
+
+
+@app.get("/health/redis")
+async def redis_health() -> Dict[str, Any]:
+    info = event_bus.health_info()
+    info["timestamp"] = _utc_now_iso()
+    return info
 
 
 @app.post("/run-pipeline", response_model=PipelineRunResponse)
@@ -255,6 +297,14 @@ async def detections() -> Dict[str, Any]:
 @app.get("/attack-chains")
 async def attack_chains() -> Dict[str, Any]:
     payload = _build_attack_chain_payload()
+    if not payload["attack_chains"]:
+        raise HTTPException(status_code=404, detail="No attack chains found. Run POST /run-pipeline first.")
+    return payload
+
+
+@app.get("/attack-chains/mitre")
+async def attack_chains_mitre() -> Dict[str, Any]:
+    payload = _build_mitre_attack_chain_payload()
     if not payload["attack_chains"]:
         raise HTTPException(status_code=404, detail="No attack chains found. Run POST /run-pipeline first.")
     return payload

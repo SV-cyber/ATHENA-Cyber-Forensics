@@ -25,7 +25,14 @@
         "stealthy"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Reconnaissance",
+    "mitre_tactic_id": "TA0043",
+    "mitre_technique": "Gather Victim Host Information: Software",
+    "mitre_technique_id": "T1592.002",
+    "mitre_chain_position": 1,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 0
   },
   {
     "tactic": "Initial Access",
@@ -53,7 +60,15 @@
         "fast"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Initial Access",
+    "mitre_tactic_id": "TA0001",
+    "mitre_technique": "Phishing: Spearphishing Attachment",
+    "mitre_technique_id": "T1566.001",
+    "mitre_chain_position": 2,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 1,
+    "mitre_previous_tactic_id": "TA0043"
   },
   {
     "tactic": "Execution",
@@ -80,7 +95,15 @@
         "living_off_the_land"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Execution",
+    "mitre_tactic_id": "TA0002",
+    "mitre_technique": "Command and Scripting Interpreter: PowerShell",
+    "mitre_technique_id": "T1059.001",
+    "mitre_chain_position": 3,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 2,
+    "mitre_previous_tactic_id": "TA0001"
   },
   {
     "tactic": "Persistence",
@@ -107,7 +130,15 @@
         "stealthy"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Persistence",
+    "mitre_tactic_id": "TA0003",
+    "mitre_technique": "Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder",
+    "mitre_technique_id": "T1547.001",
+    "mitre_chain_position": 4,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 3,
+    "mitre_previous_tactic_id": "TA0002"
   },
   {
     "tactic": "Privilege Escalation",
@@ -134,7 +165,15 @@
         "stealthy"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Privilege Escalation",
+    "mitre_tactic_id": "TA0004",
+    "mitre_technique": "Abuse Elevation Control Mechanism: Bypass User Account Control",
+    "mitre_technique_id": "T1548.002",
+    "mitre_chain_position": 5,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 4,
+    "mitre_previous_tactic_id": "TA0003"
   },
   {
     "tactic": "Defense Evasion",
@@ -162,7 +201,15 @@
         "living_off_the_land"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Defense Evasion",
+    "mitre_tactic_id": "TA0005",
+    "mitre_technique": "Masquerading: Match Legitimate Name or Location",
+    "mitre_technique_id": "T1036.005",
+    "mitre_chain_position": 6,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 5,
+    "mitre_previous_tactic_id": "TA0004"
   },
   {
     "tactic": "Credential Access",
@@ -190,7 +237,15 @@
         "living_off_the_land"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Credential Access",
+    "mitre_tactic_id": "TA0006",
+    "mitre_technique": "Unsecured Credentials: Credentials in Registry",
+    "mitre_technique_id": "T1552.002",
+    "mitre_chain_position": 7,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 6,
+    "mitre_previous_tactic_id": "TA0005"
   },
   {
     "tactic": "Discovery",
@@ -217,7 +272,15 @@
         "living_off_the_land"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Discovery",
+    "mitre_tactic_id": "TA0007",
+    "mitre_technique": "Account Discovery: Domain Account",
+    "mitre_technique_id": "T1087.002",
+    "mitre_chain_position": 8,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 7,
+    "mitre_previous_tactic_id": "TA0006"
   },
   {
     "tactic": "Discovery",
@@ -244,7 +307,15 @@
         "fast"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Discovery",
+    "mitre_tactic_id": "TA0007",
+    "mitre_technique": "System Network Configuration Discovery",
+    "mitre_technique_id": "T1016",
+    "mitre_chain_position": 9,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 7,
+    "mitre_previous_tactic_id": "TA0007"
   },
   {
     "tactic": "Lateral Movement",
@@ -272,7 +343,15 @@
         "stealthy"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Lateral Movement",
+    "mitre_tactic_id": "TA0008",
+    "mitre_technique": "Remote Services: Windows Remote Management",
+    "mitre_technique_id": "T1021.006",
+    "mitre_chain_position": 10,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 8,
+    "mitre_previous_tactic_id": "TA0007"
   },
   {
     "tactic": "Collection",
@@ -297,7 +376,15 @@
       },
       "tags": [],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Collection",
+    "mitre_tactic_id": "TA0009",
+    "mitre_technique": "Data from Local System",
+    "mitre_technique_id": "T1005",
+    "mitre_chain_position": 11,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 9,
+    "mitre_previous_tactic_id": "TA0008"
   },
   {
     "tactic": "Exfiltration",
@@ -324,7 +411,15 @@
         "high_impact"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Exfiltration",
+    "mitre_tactic_id": "TA0010",
+    "mitre_technique": "Exfiltration Over C2 Channel",
+    "mitre_technique_id": "T1041",
+    "mitre_chain_position": 12,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 10,
+    "mitre_previous_tactic_id": "TA0009"
   },
   {
     "tactic": "Command and Control",
@@ -352,6 +447,14 @@
         "living_off_the_land"
       ],
       "actor": "APT28"
-    }
+    },
+    "mitre_tactic": "Command and Control",
+    "mitre_tactic_id": "TA0011",
+    "mitre_technique": "Application Layer Protocol: Web Protocols",
+    "mitre_technique_id": "T1071.001",
+    "mitre_chain_position": 13,
+    "mitre_progression_valid": true,
+    "mitre_stage_order": 11,
+    "mitre_previous_tactic_id": "TA0010"
   }
 ]

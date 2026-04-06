@@ -203,11 +203,30 @@ class ThreatDetectionModel:
         Consume normalized events from the event bus and return a DataFrame.
         Falls back to the provided DataFrame if the bus is empty.
         """
-        events = bus.consume_all()
-        if events:
-            df = pd.DataFrame(events)
-            self.logger.info("Consumed %d events from event bus for ML stage", len(df))
-            return df
+        last_error: Optional[Exception] = None
+        for attempt in range(1, 4):
+            try:
+                events = bus.consume_all() if attempt == 1 else bus.claim_pending(batch_size=10)
+                if events:
+                    clean_events = [{k: v for k, v in event.items() if not k.startswith("_redis_")} for event in events]
+                    df = pd.DataFrame(clean_events)
+                    acked = 0
+                    for event in events:
+                        if bus.ack(event):
+                            acked += 1
+                    if acked != len(events):
+                        self.logger.warning("Acknowledged %d/%d events from event bus", acked, len(events))
+                    self.logger.info("Consumed %d events from event bus for ML stage", len(df))
+                    return df
+                break
+            except Exception as exc:
+                last_error = exc
+                if attempt < 3:
+                    self.logger.warning("Failed processing consumed events (attempt %d/3): %s", attempt, exc)
+                    continue
+                self.logger.exception("Failed processing consumed events after 3 attempts")
+        if last_error is not None:
+            self.logger.error("Continuing after event bus processing failure: %s", last_error)
         if fallback_df is not None:
             self.logger.info("Event bus empty; using fallback DataFrame with %d rows", len(fallback_df))
             return fallback_df.copy()

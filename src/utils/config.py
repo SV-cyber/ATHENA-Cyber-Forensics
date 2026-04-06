@@ -31,6 +31,8 @@ class RedisConfig:
     HOST = os.getenv("REDIS_HOST", "localhost")
     PORT = int(os.getenv("REDIS_PORT", 6379))
     DB = int(os.getenv("REDIS_DB", 0))
+    STREAM_KEY = os.getenv("REDIS_STREAM_KEY", "athena:events")
+    CONSUMER_GROUP = os.getenv("REDIS_CONSUMER_GROUP", "ml_workers")
 
 
 class APIConfig:

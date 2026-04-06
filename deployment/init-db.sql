@@ -65,3 +65,34 @@ CREATE TABLE IF NOT EXISTS correlations (
     raw_data JSONB,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE IF NOT EXISTS alerts (
+    id SERIAL PRIMARY KEY,
+    alert_id VARCHAR(64) UNIQUE NOT NULL,
+    timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    source_ip INET,
+    event_type VARCHAR(100),
+    severity VARCHAR(20),
+    rule_alerts JSONB,
+    ml_score FLOAT,
+    duplicate_count INTEGER DEFAULT 1,
+    status VARCHAR(20) DEFAULT 'active',
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT alerts_status_check CHECK (status IN ('active', 'acknowledged', 'resolved', 'throttled'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_alerts_alert_id ON alerts(alert_id);
+CREATE INDEX IF NOT EXISTS idx_alerts_timestamp ON alerts(timestamp);
+CREATE INDEX IF NOT EXISTS idx_alerts_status ON alerts(status);
+CREATE INDEX IF NOT EXISTS idx_alerts_source_ip ON alerts(source_ip);
+
+CREATE TABLE IF NOT EXISTS scenario_executions (
+    id SERIAL PRIMARY KEY,
+    execution_id VARCHAR(64) UNIQUE NOT NULL,
+    scenario_name VARCHAR(255) NOT NULL,
+    started_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMPTZ,
+    events_generated INTEGER DEFAULT 0,
+    status VARCHAR(32) DEFAULT 'running'
+);

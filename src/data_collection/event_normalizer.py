@@ -16,12 +16,20 @@ Output:
 from __future__ import annotations
 
 import random
+import sys
 import uuid
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import pandas as pd
+
+SRC_ROOT = Path(__file__).resolve().parents[1]
+if str(SRC_ROOT) not in sys.path:
+    sys.path.append(str(SRC_ROOT))
+
+from simulation.mitre_mapper import MITREAttackMapper
 
 
 Severity = str
@@ -52,6 +60,10 @@ class EventNormalizer:
         - event_type
         - tactic
         - technique_id
+        - mitre_tactic
+        - mitre_tactic_id
+        - mitre_technique
+        - mitre_technique_id
         - severity
         - is_malicious
     """
@@ -98,6 +110,7 @@ class EventNormalizer:
         self._rng = random.Random(self.config.seed)
 
         self._normalized_events: List[Dict[str, Any]] = []
+        self._mitre_mapper = MITREAttackMapper()
 
         # Precompute tactic encoding.
         self._tactic_encoding: Dict[str, int] = {t: i for i, t in enumerate(self.TACTIC_ORDER)}
@@ -138,6 +151,15 @@ class EventNormalizer:
 
             # Feature engineering for ML pipeline compatibility.
             event.update(self._engineer_features(event=event, entry=entry, step=step))
+            event.update(
+                {
+                    "mitre_tactic": step.get("mitre_tactic"),
+                    "mitre_tactic_id": step.get("mitre_tactic_id"),
+                    "mitre_technique": step.get("mitre_technique") or step.get("technique_name"),
+                    "mitre_technique_id": step.get("mitre_technique_id") or technique_id,
+                }
+            )
+            event = self._mitre_mapper.map_event(event)
 
             normalized.append(event)
 
@@ -164,6 +186,10 @@ class EventNormalizer:
             "event_type",
             "tactic",
             "technique_id",
+            "mitre_tactic",
+            "mitre_tactic_id",
+            "mitre_technique",
+            "mitre_technique_id",
             "severity",
         ):
             if col in df.columns:
